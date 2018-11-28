@@ -4,7 +4,7 @@ Repository for docker images
 Kafka cluster docker images with SSL enabled   
 Usage
 1. Run ```./create-certs.sh``` to generate the ssl trust store and keystore.
-2. Run ```export KAFKA_SSL_SECRETS_DIR=${pwd}/secrets```
+2. Run ```export KAFKA_SSL_SECRETS_DIR=$(pwd)/secrets```
 2. Run ```docker-compose up -d``` to start the kafka cluster
 2. Run ```docker-compose ps``` or ```docker-compose logs kafka-ssl-1``` to check the status
 3. Run the following command to verify zk status: 
