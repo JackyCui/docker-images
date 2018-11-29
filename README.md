@@ -21,3 +21,4 @@ done
 2. Modify ```/etc/hosts``` on all hosts to add the host mapping,  like ```192.168.1.5 kafka-1,kafka-ssl-1```
 3. Run ```docker-compose up -d``` to start the new node
 4. Use producer and consumer to check if it works
+5. Use kafka expansion method to expand the current queue and use topic describe to check status.
