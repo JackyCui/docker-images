@@ -13,9 +13,8 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:22888:23888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
-    extra_hosts:
-      - "moby:127.0.0.1"
-
+    network_mode: host
+    
   zookeeper-2:
     image: confluentinc/cp-zookeeper:latest
     hostname: zookeeper-2
@@ -28,8 +27,7 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:22888:23888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
-    extra_hosts:
-      - "moby:127.0.0.1"
+    network_mode: host
 
   zookeeper-3:
     image: confluentinc/cp-zookeeper:latest
@@ -43,12 +41,11 @@ services:
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:22888:23888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
-    extra_hosts:
-      - "moby:127.0.0.1"
+    network_mode: host
 
   kafka-ssl-1:
     image: confluentinc/cp-kafka:latest
-    hostname: kafka-1
+    hostname: kafka-ssl-1
     ports:
       - "19092:19092"
       - "19094:19094"
@@ -60,27 +57,28 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       KAFKA_LISTENERS: PLAINTEXT://:19092,SSL://:19094
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:19092,SSL://116.196.118.13:19094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:19092,SSL://116.196.123.103:19094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL
       KAFKA_SSL_KEYSTORE_FILENAME: kafka.broker1.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: broker1_keystore_creds
       KAFKA_SSL_KEY_CREDENTIALS: broker1_sslkey_creds
       KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.broker1.truststore.jks
       KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker1_truststore_creds
-      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
-      KAFKA_SSL_CLIENT_AUTH: requested
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: 
+      KAFKA_LISTENER_NAME_INTERNAL_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: 
+      KAFKA_SSL_CLIENT_AUTH: required
       KAFKA_SECURITY_INTER_BROKER_PROTOCOL: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 3
+      KAFKA_LOG_RETENTION_HOURS: 48
     volumes:
       - ${KAFKA_SSL_SECRETS_DIR}:/etc/kafka/secrets
-    extra_hosts:
-      - "moby:127.0.0.1"
-      - "kafka-1:192.168.0.16"
-      - "kafka-2:192.168.0.16"
-      - "kafka-3:192.168.0.16"
+    network_mode: host
 
   kafka-ssl-2:
     image: confluentinc/cp-kafka:latest
-    hostname: kafka-2
+    hostname: kafka-ssl-2
     ports:
       - "29092:29092"
       - "29094:29094"
@@ -92,27 +90,28 @@ services:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       KAFKA_LISTENERS: PLAINTEXT://:29092,SSL://:29094
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:29092,SSL://116.196.118.13:29094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:29092,SSL://116.196.123.103:29094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL
       KAFKA_SSL_KEYSTORE_FILENAME: kafka.broker2.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: broker2_keystore_creds
       KAFKA_SSL_KEY_CREDENTIALS: broker2_sslkey_creds
       KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.broker2.truststore.jks
       KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker2_truststore_creds
-      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
-      KAFKA_SSL_CLIENT_AUTH: requested
-      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: 
+      KAFKA_LISTENER_NAME_INTERNAL_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: 
+      KAFKA_SSL_CLIENT_AUTH: required
+      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 3
+      KAFKA_LOG_RETENTION_HOURS: 48
     volumes:
       - ${KAFKA_SSL_SECRETS_DIR}:/etc/kafka/secrets
-    extra_hosts:
-      - "moby:127.0.0.1"
-      - "kafka-1:192.168.0.16"
-      - "kafka-2:192.168.0.16"
-      - "kafka-3:192.168.0.16"
+    network_mode: host
 
   kafka-ssl-3:
     image: confluentinc/cp-kafka:latest
-    hostname: kafka-3
+    hostname: kafka-ssl-3
     ports:
       - "39092:39092"
       - "39094:39094"
@@ -124,20 +123,22 @@ services:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       KAFKA_LISTENERS: PLAINTEXT://:39092,SSL://:39094
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:39092,SSL://116.196.118.13:39094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:39092,SSL://116.196.123.103:39094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL
       KAFKA_SSL_KEYSTORE_FILENAME: kafka.broker3.keystore.jks
       KAFKA_SSL_KEYSTORE_CREDENTIALS: broker3_keystore_creds
       KAFKA_SSL_KEY_CREDENTIALS: broker3_sslkey_creds
       KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.broker3.truststore.jks
       KAFKA_SSL_TRUSTSTORE_CREDENTIALS: broker3_truststore_creds
-      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
-      KAFKA_SSL_CLIENT_AUTH: requested
-      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SSL
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: 
+      KAFKA_LISTENER_NAME_INTERNAL_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: 
+      KAFKA_SSL_CLIENT_AUTH: required
+      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 3
+      KAFKA_LOG_RETENTION_HOURS: 48
     volumes:
       - ${KAFKA_SSL_SECRETS_DIR}:/etc/kafka/secrets
-    extra_hosts:
-      - "moby:127.0.0.1"
-      - "kafka-1:192.168.0.16"
-      - "kafka-2:192.168.0.16"
-      - "kafka-3:192.168.0.16"
+    network_mode: host
+    
