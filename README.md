@@ -16,3 +16,8 @@ done
 3. Run ```bin/kafka-topics --zookeeper zookeeper-1:22181 --topic mytest2 --create --partitions 3 --replication-factor 3``` to create a topic
 4. Run ```bin/kafka-console-consumer --bootstrap-server kafka-1:19094 --topic mytest2 --consumer.config /etc/kafka/secrets/host.consumer.ssl.config``` to start the console consumer
 5. Run ```bin/kafka-console-producer --broker-list kafka-1:19094 --topic mytest2 --producer.config /etc/kafka/secrets/host.producer.ssl.config``` to start the console producer
+## Kafka-cluster-ssl on different hosts
+1. Copy docker-compose-nodes.yml to the different host and modify the parameter according to your environment
+2. Modify ```/etc/hosts``` on all hosts to add the host mapping,  like ```192.168.1.5 kafka-1,kafka-ssl-1```
+3. Run ```docker-compose up -d``` to start the new node
+4. Use producer and consumer to check if it works
